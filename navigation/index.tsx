@@ -4,6 +4,7 @@
  *
  */
 import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
@@ -111,8 +112,8 @@ function BottomTabNavigator() {
         name="TabTwo"
         component={TabTwoScreen}
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Settings",
+          tabBarIcon: ({ color }) => <TabBarIcon2 name="setting" color={color} />,
         }}
       />
     </BottomTab.Navigator>
@@ -127,4 +128,11 @@ function TabBarIcon(props: {
   color: string;
 }) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+}
+
+function TabBarIcon2(props: {
+  name: React.ComponentProps<typeof AntDesign>["name"];
+  color: string;
+}) {
+  return <AntDesign size={30} style={{ marginBottom: -3 }} {...props} />;
 }
