@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { FAB } from "react-native-paper";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
@@ -7,6 +8,9 @@ import { RootTabScreenProps } from "../types";
 export default function TabOneScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
+  const onPressAdd = () => {
+    navigation.navigate("Compose"); // (3)
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
@@ -16,6 +20,15 @@ export default function TabOneScreen({
         darkColor="rgba(255,255,255,0.1)"
       />
       <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <FAB
+        style={{
+          position: "absolute",
+          right: 16,
+          bottom: 16,
+        }}
+        icon="plus"
+        onPress={onPressAdd}
+      />
     </View>
   );
 }
