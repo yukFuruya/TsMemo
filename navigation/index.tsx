@@ -120,11 +120,7 @@ function BottomTabNavigator() {
         component={TabTwoScreen}
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Modal")}>
-              <TabBarIcon2 name="setting" color={color} />
-            </TouchableOpacity>
-          ),
+                    tabBarIcon: ({ color }) => <TabBarIcon2 name="setting" color={color} />,
         }}
       />
     </BottomTab.Navigator>
