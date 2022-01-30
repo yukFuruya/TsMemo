@@ -13,11 +13,17 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import {
+  ColorSchemeName,
+  Pressable,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
+import NewPostScreen from "../screens/NewPostScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
@@ -57,6 +63,7 @@ function RootNavigator() {
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="NewPost" component={NewPostScreen} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -113,7 +120,11 @@ function BottomTabNavigator() {
         component={TabTwoScreen}
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <TabBarIcon2 name="setting" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Modal")}>
+              <TabBarIcon2 name="setting" color={color} />
+            </TouchableOpacity>
+          ),
         }}
       />
     </BottomTab.Navigator>
