@@ -9,7 +9,7 @@ export default function TabOneScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
   const onPressAdd = () => {
-    navigation.navigate("Compose"); // (3)
+    navigation.navigate("NewPost"); // (3)
   };
   return (
     <View style={styles.container}>
