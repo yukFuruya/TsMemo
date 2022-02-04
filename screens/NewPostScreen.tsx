@@ -1,19 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet } from "react-native";
+import React, { FC } from "react";
+import { Platform, StyleSheet, TextComponent, TextInput } from "react-native";
 
-import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 
 export default function NewPostScreen() {
+  const [memo, onChangeMemo] = React.useState("");
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>NewPost</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+    <View >
+      <TextInput
+        multiline
+        style={styles.input}
+        onChangeText={onChangeMemo}
+        value={memo}
+        placeholder="今日はどんなことがありましたか？"
+        keyboardType="default"
       />
-      <EditScreenInfo path="/screens/ModalScreen.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
@@ -22,18 +25,11 @@ export default function NewPostScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  input: {
+    height: 150,
+    margin: 5,
+    borderWidth: 1,
+    padding: 4,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
+
 });
