@@ -8,7 +8,7 @@ export default function NewPostScreen() {
   const [memo, onChangeMemo] = React.useState("");
 
   return (
-    <View >
+    <View>
       <TextInput
         multiline
         style={styles.input}
@@ -30,6 +30,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderWidth: 1,
     padding: 4,
+    backgroundColor: "skyblue",
   },
-
 });

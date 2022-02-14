@@ -19,6 +19,7 @@ import {
   Touchable,
   TouchableOpacity,
 } from "react-native";
+import { Button } from "react-native-elements";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -43,6 +44,7 @@ export default function Navigation({
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+      // theme={DefaultTheme}
     >
       <RootNavigator />
     </NavigationContainer>
@@ -56,6 +58,7 @@ export default function Navigation({
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const colorScheme = useColorScheme();
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -63,7 +66,58 @@ function RootNavigator() {
         component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="NewPost" component={NewPostScreen} />
+      <Stack.Screen 
+        name="NewPost" 
+        component={NewPostScreen}
+        options={({ navigation }: RootTabScreenProps<"NewPost">) => ({
+            title: "",
+            headerLeft:() => (
+              <Button
+                onPress={() => navigation.navigate("TabOne")}
+                title="CANCEL"
+                icon={{
+                  name: 'ban',
+                  type: 'font-awesome',
+                  size: 15,
+                  color: 'white',
+                }}
+                titleStyle={{ fontWeight: '700' }}
+                buttonStyle={{
+                  backgroundColor: 'salmon',
+                  borderColor: 'transparent',
+                  borderRadius: 10,
+                  paddingLeft: 3
+                }}
+                containerStyle={{
+                  width: 100,
+                }}
+              />
+            ),
+            headerRight:() => (
+              <Button
+                onPress={() => navigation.navigate("TabOne")}
+                title="POST"
+                icon={{
+                  name: 'paper-plane',
+                  type: 'font-awesome',
+                  size: 15,
+                  color: 'white',
+                }}
+                titleStyle={{ fontWeight: '700' }}
+                buttonStyle={{
+                  backgroundColor: 'rgba(90, 154, 230, 1)',
+                  borderColor: 'transparent',
+                  borderRadius: 10,
+                  paddingLeft: 3
+                }}
+                containerStyle={{
+                  width: 100,
+                  
+                }}
+              />
+            )
+          })}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
