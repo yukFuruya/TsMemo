@@ -4,7 +4,7 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 
 import React, { useState } from "react";
-import { FlatList, SafeAreaView, StatusBar, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 
 
 
