@@ -5,7 +5,10 @@ import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 
-export default function TabOneScreen({
+import { Calendar } from 'react-native-calendars';
+
+
+export default function TabOneScreen(this: any, {
   navigation,
 }: RootTabScreenProps<"TabOne">) {
   const onPressAdd = () => {
@@ -13,13 +16,17 @@ export default function TabOneScreen({
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <Calendar style={styles.calendar}
+        monthFormat={'yyyy年 M月'}
+        onDayPress={this.onDayPress}
+        markingType={'period'}
+        markedDates={{
+          '2022-02-21': { startingDay: true, color: '#50cebb', selected: true },
+          '2022-02-22': { color: '#70d7c7', selected: true },
+          '2022-02-23': { color: '#70d7c7', selected: true },
+          '2022-02-24': { color: '#70d7c7', selected: true },
+          '2022-02-25': { endingDay: true, color: '#50cebb', selected: true },
+        }} />
       <FAB
         style={{
           position: "absolute",
@@ -35,9 +42,14 @@ export default function TabOneScreen({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     alignItems: "center",
     justifyContent: "center",
+  },
+  calendar: {
+    top: 0,
+    height: "80%",
+    width: "100%",
   },
   title: {
     fontSize: 20,
