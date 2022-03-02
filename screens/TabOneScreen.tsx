@@ -5,28 +5,29 @@ import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 
-import { Calendar } from 'react-native-calendars';
+import { Calendar } from "react-native-calendars";
 
-
-export default function TabOneScreen(this: any, {
-  navigation,
-}: RootTabScreenProps<"TabOne">) {
+export default function TabOneScreen(
+  this: any,
+  { navigation }: RootTabScreenProps<"TabOne">
+) {
   const onPressAdd = () => {
     navigation.navigate("NewPost"); // (3)
   };
   return (
     <View style={styles.container}>
-      <Calendar style={styles.calendar}
-        monthFormat={'yyyy年 M月'}
+      <Calendar
+        monthFormat={"yyyy年 M月"}
         onDayPress={this.onDayPress}
-        markingType={'period'}
+        markingType={"period"}
         markedDates={{
-          '2022-02-21': { startingDay: true, color: '#50cebb', selected: true },
-          '2022-02-22': { color: '#70d7c7', selected: true },
-          '2022-02-23': { color: '#70d7c7', selected: true },
-          '2022-02-24': { color: '#70d7c7', selected: true },
-          '2022-02-25': { endingDay: true, color: '#50cebb', selected: true },
-        }} />
+          "2022-02-21": { startingDay: true, color: "#50cebb", selected: true },
+          "2022-02-22": { color: "#70d7c7", selected: true },
+          "2022-02-23": { color: "#70d7c7", selected: true },
+          "2022-02-24": { color: "#70d7c7", selected: true },
+          "2022-02-25": { endingDay: true, color: "#50cebb", selected: true },
+        }}
+      />
       <FAB
         style={{
           position: "absolute",
@@ -42,14 +43,9 @@ export default function TabOneScreen(this: any, {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  calendar: {
-    top: 0,
-    height: "80%",
-    width: "100%",
+    flex: 1,
+    alignItems: "stretch",
+    justifyContent: "flex-start",
   },
   title: {
     fontSize: 20,
