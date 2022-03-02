@@ -30,7 +30,7 @@ const TabTwoScreen = () => {
       fullName: "Kiara",
       avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
     }];
-  return <Box width="90%">
+  return <Box flex={1} width="90%">
     <FlatList data={DATA} renderItem={({
       item
     }) => <Box borderBottomWidth="1" _dark={{
@@ -94,7 +94,6 @@ export default () => {
         extraData={selectedId}
       />
       <View
-        style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)" */}
       {/* /> */}
@@ -106,17 +105,13 @@ export default () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    marginVertical: 50,
+    alignItems: "stretch",
     justifyContent: "center",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
   },
   item: {
     padding: 10,
