@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
-
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
-
 import { Calendar } from "react-native-calendars";
+import { app, db } from "../App";
+import { collection, getDocs } from "firebase/firestore";
+import { FirebaseError } from "firebase/app";
 
 export default function TabOneScreen(
   this: any,
@@ -14,6 +15,17 @@ export default function TabOneScreen(
   const onPressAdd = () => {
     navigation.navigate("NewPost"); // (3)
   };
+  const getFirebaseItems = async () => {
+    const snapshot = await getDocs(collection(db, "user"));
+    const names = snapshot.docs.map((doc) => doc.data());
+    console.log(names);
+    return (
+      <View>
+        <Text>{names}</Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Calendar
@@ -28,6 +40,8 @@ export default function TabOneScreen(
           "2022-02-25": { endingDay: true, color: "#50cebb", selected: true },
         }}
       />
+      {getFirebaseItems}
+      
       <FAB
         style={{
           position: "absolute",
