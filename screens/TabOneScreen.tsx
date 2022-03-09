@@ -1,13 +1,10 @@
 import { StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
-
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
-
 import { Calendar } from "react-native-calendars";
 import { app, db } from "../App";
-
 import { collection, getDocs } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 
@@ -44,6 +41,7 @@ export default function TabOneScreen(
         }}
       />
       {getFirebaseItems}
+      
       <FAB
         style={{
           position: "absolute",
