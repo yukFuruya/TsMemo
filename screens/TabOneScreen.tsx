@@ -1,29 +1,60 @@
-import { StyleSheet } from "react-native";
+import { ShadowPropTypesIOS, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
+import React,{ useEffect, useState } from "react";
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 import { Calendar } from "react-native-calendars";
-import { app, db } from "../App";
-import { collection, getDocs } from "firebase/firestore";
-import { FirebaseError } from "firebase/app";
+
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+
+if (!firebase.apps.length){
+  const firebaseConfig = {
+    apiKey: "AIzaSyBew5xlRvvVcaceN1eRt2zxbzJVkU_RomI",
+    authDomain: "my-first-tsmemo-native.firebaseapp.com",
+    projectId: "my-first-tsmemo-native",
+    storageBucket: "my-first-tsmemo-native.appspot.com",
+    messagingSenderId: "329406136992",
+    appId: "1:329406136992:web:479e85eefd2d2387c43fc5",
+    measurementId: "G-LPWPD3VH43",
+  };
+  firebase.initializeApp(firebaseConfig);
+}
+
+type User = {
+  age: string;
+  family: string;
+  last: string;
+}
 
 export default function TabOneScreen(
   this: any,
   { navigation }: RootTabScreenProps<"TabOne">
 ) {
+
+  const [users,setUsers] = useState<User[]>([])
+  useEffect(() => {
+    getFirebaseItems();
+  },[])
+
+  const getFirebaseItems = async() => {
+      const snapshot = await firebase.firestore().collection("user").get();
+      const users = snapshot.docs.map(doc => doc.data() as User);
+      console.log(users);
+      setUsers(users);
+  }
+
+  const userItems = users.map((user, index) => (
+    <View style={{margin: 10}} key={index.toString()}>
+      <Text>{user.age}</Text>
+      <Text>{user.family}</Text>
+      <Text>{user.last}</Text>
+    </View>
+  ));
+
   const onPressAdd = () => {
     navigation.navigate("NewPost"); // (3)
-  };
-  const getFirebaseItems = async () => {
-    const snapshot = await getDocs(collection(db, "user"));
-    const names = snapshot.docs.map((doc) => doc.data());
-    console.log(names);
-    return (
-      <View>
-        <Text>{names}</Text>
-      </View>
-    );
   };
 
   return (
@@ -32,16 +63,8 @@ export default function TabOneScreen(
         monthFormat={"yyyy年 M月"}
         onDayPress={this.onDayPress}
         markingType={"period"}
-        markedDates={{
-          "2022-02-21": { startingDay: true, color: "#50cebb", selected: true },
-          "2022-02-22": { color: "#70d7c7", selected: true },
-          "2022-02-23": { color: "#70d7c7", selected: true },
-          "2022-02-24": { color: "#70d7c7", selected: true },
-          "2022-02-25": { endingDay: true, color: "#50cebb", selected: true },
-        }}
       />
-      {getFirebaseItems}
-      
+      {userItems}
       <FAB
         style={{
           position: "absolute",
