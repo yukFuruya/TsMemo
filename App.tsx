@@ -1,19 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
-
-
-
-
-
+import { getUsers } from "./lib/firebase";
 
 export default function App() {
-
-
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
