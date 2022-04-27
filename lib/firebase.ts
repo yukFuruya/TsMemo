@@ -1,5 +1,6 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
+import { Diary } from "../types/diary";
 import { User } from "../types/user";
 
 if (!firebase.apps.length) {
@@ -17,6 +18,10 @@ if (!firebase.apps.length) {
 
 export const getUsers = async () => {
   const snapshot = await firebase.firestore().collection("user").get();
-  const users = snapshot.docs.map((doc) => doc.data() as User);
+  const users = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User));
   return users;
+};
+
+export const addDiary = async (userId: string, diary: Diary) => {
+  await firebase.firestore().collection("user").doc(userId).collection("diary").add(diary);
 };

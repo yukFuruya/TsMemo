@@ -3,15 +3,21 @@ import { FAB } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
-import { RootTabScreenProps } from "../types";
+import { RootStackParamList, RootTabScreenProps } from "../types";
 import { Calendar } from "react-native-calendars";
 import { getUsers } from "../lib/firebase";
 import { User } from "../types/user";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-export default function TabOneScreen(
-  this: any,
-  { navigation }: RootTabScreenProps<"TabOne">
-) {
+type Props = {
+  // navigation: RootTabScreenProps<"TabOne"> 
+  navigation: StackNavigationProp<RootStackParamList, "User"> 
+  route: RouteProp<RootStackParamList, "User">;
+}
+
+export default function TabOneScreen( this: any, { navigation, route }: Props) {
+  const { user } = route.params;
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
     getFirebaseItems();
@@ -31,7 +37,7 @@ export default function TabOneScreen(
   ));
 
   const onPressAdd = () => {
-    navigation.navigate("NewPost"); // (3)
+    navigation.navigate("NewPost", { user }); // (3)
   };
 
   return (
