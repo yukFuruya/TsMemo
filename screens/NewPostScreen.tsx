@@ -16,100 +16,100 @@ import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   // navigation: RootTabScreenProps<"TabOne">;
-  navigation: StackNavigationProp<RootStackParamList, "User">;
-  route: RouteProp<RootStackParamList, "User">;
-}
+  navigation: StackNavigationProp<RootStackParamList, "NewPost">;
+  route: RouteProp<RootStackParamList, "NewPost">;
+};
 
-export default function NewPostScreen( this: any, { navigation, route }: Props) {
+export default function NewPostScreen(this: any, { navigation, route }: Props) {
   const { user } = route.params;
   const [text, setText] = useState<string>("");
   const [score, setScore] = useState<number>(3);
 
   useEffect(() => {
-  navigation.setOptions({
-    headerLeft: () => (
-      <Button
-        onPress={() => navigation.navigate("TabOne")}
-        title="CANCEL"
-        icon={{
-          name: 'ban',
-          type: 'font-awesome',
-          size: 15,
-          color: 'white',
-        }}
-        titleStyle={{ fontWeight: '700' }}
-        buttonStyle={{
-          backgroundColor: 'salmon',
-          borderColor: 'transparent',
-          borderRadius: 10,
-          paddingLeft: 3
-        }}
-        containerStyle={{
-          width: 100,
-        }}
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button
+          onPress={() => navigation.navigate("TabOne")}
+          title="CANCEL"
+          icon={{
+            name: "ban",
+            type: "font-awesome",
+            size: 15,
+            color: "white",
+          }}
+          titleStyle={{ fontWeight: "700" }}
+          buttonStyle={{
+            backgroundColor: "salmon",
+            borderColor: "transparent",
+            borderRadius: 10,
+            paddingLeft: 3,
+          }}
+          containerStyle={{
+            width: 100,
+          }}
+        />
+      ),
+      headerRight: () => (
+        <Button
+          onPress={() => {
+            onSubmit;
+            navigation.navigate("TabOne");
+          }}
+          title="POST"
+          icon={{
+            name: "paper-plane",
+            type: "font-awesome",
+            size: 15,
+            color: "white",
+          }}
+          titleStyle={{ fontWeight: "700" }}
+          buttonStyle={{
+            backgroundColor: "rgba(90, 154, 230, 1)",
+            borderColor: "transparent",
+            borderRadius: 10,
+            paddingLeft: 3,
+          }}
+          containerStyle={{
+            width: 100,
+          }}
+        />
+      ),
+    });
+  }, [user]);
+
+  const onSubmit = async () => {
+    const rand = uuidv4();
+    const diary = {
+      user: {
+        name: user.family,
+        id: rand,
+      },
+      text,
+      score,
+      updatedAt: firebase.firestore.Timestamp.now(),
+      createdAt: firebase.firestore.Timestamp.now(),
+    } as Diary;
+    await addDiary(rand, diary);
+  };
+
+  return (
+    <View style={styles.container}>
+      <StarInput score={score} onChangeScore={(value) => setScore(value)} />
+      <TextArea
+        value={text}
+        onChangeText={(value) => setText(value)}
+        label="本文"
+        placeholder="今日はどんなことがありましたか？"
       />
-    ),
-    headerRight: () => (
-      <Button
-        onPress={() => {
-          onSubmit
-          navigation.navigate("TabOne")
-        }}
-        title="POST"
-        icon={{
-          name: 'paper-plane',
-          type: 'font-awesome',
-          size: 15,
-          color: 'white',
-        }}
-        titleStyle={{ fontWeight: '700' }}
-        buttonStyle={{
-          backgroundColor: 'rgba(90, 154, 230, 1)',
-          borderColor: 'transparent',
-          borderRadius: 10,
-          paddingLeft: 3
-        }}
-        containerStyle={{
-          width: 100,
 
-        }}
-      />
-    )
-  });
-}, [user]);
-
-const onSubmit = async () => {
-  const rand = uuidv4()
-  const diary = {
-    user: {
-      name: user.family,
-      id: rand,
-    },
-    text,
-    score,
-    updatedAt: firebase.firestore.Timestamp.now(),
-    createdAt: firebase.firestore.Timestamp.now(),
-  } as Diary;
-  await addDiary(rand, diary);
-};
-
-return (
-  <View>
-    <StarInput score={score} onChangeScore={(value) => setScore(value)} />
-    <TextArea value={text} onChangeText={(value) => setText(value)} label="本文" placeholder="今日はどんなことがありましたか？" />
-
-    {/* Use a light status bar on iOS to account for the black space above the modal */}
-    <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-  </View>
-);
+      {/* Use a light status bar on iOS to account for the black space above the modal */}
+      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 150,
-    margin: 5,
-    borderWidth: 1,
-    padding: 4,
-    backgroundColor: "skyblue",
+  container: {
+    backgroundColor: 'white'
   },
 });

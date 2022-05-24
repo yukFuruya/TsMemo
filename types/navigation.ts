@@ -4,5 +4,5 @@ export type RootStackParamList = {
   Main: undefined;
   Home: undefined;
   User: { user: User };
-  CreateReview: { user: User };
+  NewPost: { user: User };
 };

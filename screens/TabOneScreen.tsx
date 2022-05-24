@@ -11,13 +11,11 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type Props = {
-  // navigation: RootTabScreenProps<"TabOne"> 
-  navigation: StackNavigationProp<RootStackParamList, "User"> 
-  route: RouteProp<RootStackParamList, "User">;
-}
+  // navigation: RootTabScreenProps<"TabOne">
+  navigation: StackNavigationProp<RootStackParamList, "User">;
+};
 
-export default function TabOneScreen( this: any, { navigation, route }: Props) {
-  const { user } = route.params;
+export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
     getFirebaseItems();
@@ -36,7 +34,7 @@ export default function TabOneScreen( this: any, { navigation, route }: Props) {
     </View>
   ));
 
-  const onPressAdd = () => {
+  const onPressAdd = (user: User) => {
     navigation.navigate("NewPost", { user }); // (3)
   };
 
@@ -55,7 +53,7 @@ export default function TabOneScreen( this: any, { navigation, route }: Props) {
           bottom: 16,
         }}
         icon="plus"
-        onPress={onPressAdd}
+        onPress={() => onPressAdd(users[0])}
       />
     </View>
   );
