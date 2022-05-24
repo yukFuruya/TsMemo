@@ -78,18 +78,18 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
   }, [user]);
 
   const onSubmit = async () => {
-    const rand = uuidv4();
     const diary = {
       user: {
         name: user.family,
-        id: rand,
+        id: user.id,
       },
+      title: "test title",
       text,
       score,
       updatedAt: firebase.firestore.Timestamp.now(),
       createdAt: firebase.firestore.Timestamp.now(),
     } as Diary;
-    await addDiary(rand, diary);
+    await addDiary(diary.user.id, diary);
   };
 
   return (
@@ -110,6 +110,6 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
 });
