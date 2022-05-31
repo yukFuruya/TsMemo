@@ -17,11 +17,16 @@ if (!firebase.apps.length) {
 }
 
 export const getUsers = async () => {
-  const snapshot = await firebase.firestore().collection("user").get();
-  const users = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User));
-  return users;
+  try {
+    const snapshot = await firebase.firestore().collection("user").get();
+    const users = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User));
+    return users;
+  } catch(err) {
+    console.log(err);
+    return [];
+  }
 };
 
 export const addDiary = async (userId: string, diary: Diary) => {
-  await firebase.firestore().collection("user").doc(userId).collection("diary").add(diary);
+  await firebase.firestore().collection("user").doc(userId).collection("diarys").add(diary);
 };

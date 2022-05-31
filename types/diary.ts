@@ -2,7 +2,7 @@ import firebase from "firebase"
 
 type UserRef = {
     id: string;
-    name: string;
+    family: string;
 }
 
 export type Diary = {

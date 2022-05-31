@@ -1,18 +1,18 @@
 import { StatusBar } from "expo-status-bar";
-import React, { FC, useState, useEffect, useContext } from "react";
-import { Platform, StyleSheet, TextComponent, TextInput } from "react-native";
+import React, { FC, useState, useEffect } from "react";
+import { Platform, StyleSheet } from "react-native";
 import { TextArea } from "../components/TextArea";
 import { StarInput } from "../components/StarInput";
-import { Text, View } from "../components/Themed";
+import { View } from "../components/Themed";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList, RootTabScreenProps } from "../types";
 import { Button } from "react-native-elements";
 import { addDiary } from "../lib/firebase";
-import firebase, { firestore } from "firebase";
+import firebase from "firebase";
 import { Diary } from "../types/diary";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
+import { Loading } from "../components/Loading";
 
 type Props = {
   // navigation: RootTabScreenProps<"TabOne">;
@@ -22,8 +22,9 @@ type Props = {
 
 export default function NewPostScreen(this: any, { navigation, route }: Props) {
   const { user } = route.params;
-  const [text, setText] = useState<string>("");
-  const [score, setScore] = useState<number>(3);
+  const [content, setContent] = useState<string>("");
+  const [stars, setStars] = useState<number>(3);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -51,10 +52,7 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
       ),
       headerRight: () => (
         <Button
-          onPress={() => {
-            onSubmit;
-            navigation.navigate("TabOne");
-          }}
+          onPress={onSubmit}
           title="POST"
           icon={{
             name: "paper-plane",
@@ -78,30 +76,33 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
   }, [user]);
 
   const onSubmit = async () => {
+    setLoading(true);
     const diary = {
       user: {
-        name: user.family,
-        id: user.id,
+        family: user.family,
       },
       title: "test title",
-      text,
-      score,
+      text: content,
+      score: stars,
       updatedAt: firebase.firestore.Timestamp.now(),
       createdAt: firebase.firestore.Timestamp.now(),
     } as Diary;
-    await addDiary(diary.user.id, diary);
+    await addDiary(user.id, diary);
+
+    setLoading(false);
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      <StarInput score={score} onChangeScore={(value) => setScore(value)} />
+      <StarInput score={stars} onChangeScore={(value) => setStars(value)} />
       <TextArea
-        value={text}
-        onChangeText={(value) => setText(value)}
+        value={content}
+        onChangeText={(value) => setContent(value)}
         label="本文"
         placeholder="今日はどんなことがありましたか？"
       />
-
+      <Loading visible={loading} />
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
