@@ -22,8 +22,8 @@ type Props = {
 
 export default function NewPostScreen(this: any, { navigation, route }: Props) {
   const { user } = route.params;
-  const [content, setContent] = useState<string>("");
-  const [stars, setStars] = useState<number>(3);
+  const [text, setText] = useState<string>("");
+  const [score, setScore] = useState<number>(3);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
         />
       ),
     });
-  }, [user]);
+  }, [text]);
 
   const onSubmit = async () => {
     setLoading(true);
@@ -82,23 +82,24 @@ export default function NewPostScreen(this: any, { navigation, route }: Props) {
         family: user.family,
       },
       title: "test title",
-      text: content,
-      score: stars,
+      text: text,
+      score: score,
       updatedAt: firebase.firestore.Timestamp.now(),
       createdAt: firebase.firestore.Timestamp.now(),
     } as Diary;
     await addDiary(user.id, diary);
-
     setLoading(false);
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      <StarInput score={stars} onChangeScore={(value) => setStars(value)} />
+      <StarInput score={score} onChangeScore={(value) => setScore(value)} />
       <TextArea
-        value={content}
-        onChangeText={(value) => setContent(value)}
+        value={text}
+        onChangeText={(value) => {
+          setText(value);
+        }}
         label="本文"
         placeholder="今日はどんなことがありましたか？"
       />

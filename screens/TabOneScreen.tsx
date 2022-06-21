@@ -1,4 +1,4 @@
-import { ShadowPropTypesIOS, StyleSheet } from "react-native";
+import { FlatList, ShadowPropTypesIOS, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import EditScreenInfo from "../components/EditScreenInfo";
@@ -6,6 +6,7 @@ import { Text, View } from "../components/Themed";
 import { RootStackParamList, RootTabScreenProps } from "../types";
 import { Calendar } from "react-native-calendars";
 import { getUsers } from "../lib/firebase";
+import { Diary } from "../types/diary";
 import { User } from "../types/user";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -17,6 +18,7 @@ type Props = {
 
 export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
+  const [diarys, setDiarys] = useState<Diary[]>([]);
   useEffect(() => {
     getFirebaseItems();
   }, []);
