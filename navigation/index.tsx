@@ -23,6 +23,7 @@ import { Button } from "react-native-elements";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
+import { addDiary } from "../lib/firebase";
 import ModalScreen from "../screens/ModalScreen";
 import NewPostScreen from "../screens/NewPostScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
@@ -59,6 +60,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   const colorScheme = useColorScheme();
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -71,51 +73,6 @@ function RootNavigator() {
         component={NewPostScreen}
         options={({ navigation }: RootTabScreenProps<"NewPost">) => ({
             title: "",
-            headerLeft:() => (
-              <Button
-                onPress={() => navigation.navigate("TabOne")}
-                title="CANCEL"
-                icon={{
-                  name: 'ban',
-                  type: 'font-awesome',
-                  size: 15,
-                  color: 'white',
-                }}
-                titleStyle={{ fontWeight: '700' }}
-                buttonStyle={{
-                  backgroundColor: 'salmon',
-                  borderColor: 'transparent',
-                  borderRadius: 10,
-                  paddingLeft: 3
-                }}
-                containerStyle={{
-                  width: 100,
-                }}
-              />
-            ),
-            headerRight:() => (
-              <Button
-                onPress={() => navigation.navigate("TabOne")}
-                title="POST"
-                icon={{
-                  name: 'paper-plane',
-                  type: 'font-awesome',
-                  size: 15,
-                  color: 'white',
-                }}
-                titleStyle={{ fontWeight: '700' }}
-                buttonStyle={{
-                  backgroundColor: 'rgba(90, 154, 230, 1)',
-                  borderColor: 'transparent',
-                  borderRadius: 10,
-                  paddingLeft: 3
-                }}
-                containerStyle={{
-                  width: 100,
-                  
-                }}
-              />
-            )
           })}
       />
       <Stack.Screen

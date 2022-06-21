@@ -1,18 +1,24 @@
-import { ShadowPropTypesIOS, StyleSheet } from "react-native";
+import { FlatList, ShadowPropTypesIOS, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
-import { RootTabScreenProps } from "../types";
+import { RootStackParamList, RootTabScreenProps } from "../types";
 import { Calendar } from "react-native-calendars";
 import { getUsers } from "../lib/firebase";
+import { Diary } from "../types/diary";
 import { User } from "../types/user";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-export default function TabOneScreen(
-  this: any,
-  { navigation }: RootTabScreenProps<"TabOne">
-) {
+type Props = {
+  // navigation: RootTabScreenProps<"TabOne">
+  navigation: StackNavigationProp<RootStackParamList, "User">;
+};
+
+export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
+  const [diarys, setDiarys] = useState<Diary[]>([]);
   useEffect(() => {
     getFirebaseItems();
   }, []);
@@ -30,8 +36,8 @@ export default function TabOneScreen(
     </View>
   ));
 
-  const onPressAdd = () => {
-    navigation.navigate("NewPost"); // (3)
+  const onPressAdd = (user: User) => {
+    navigation.navigate("NewPost", { user }); // (3)
   };
 
   return (
@@ -49,7 +55,7 @@ export default function TabOneScreen(
           bottom: 16,
         }}
         icon="plus"
-        onPress={onPressAdd}
+        onPress={() => onPressAdd(users[0])}
       />
     </View>
   );

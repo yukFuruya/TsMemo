@@ -1,23 +1,109 @@
 import { StatusBar } from "expo-status-bar";
-import React, { FC } from "react";
-import { Platform, StyleSheet, TextComponent, TextInput } from "react-native";
+import React, { FC, useState, useEffect } from "react";
+import { Platform, StyleSheet } from "react-native";
+import { TextArea } from "../components/TextArea";
+import { StarInput } from "../components/StarInput";
+import { View } from "../components/Themed";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList, RootTabScreenProps } from "../types";
+import { Button } from "react-native-elements";
+import { addDiary } from "../lib/firebase";
+import firebase from "firebase";
+import { Diary } from "../types/diary";
+import "react-native-get-random-values";
+import { Loading } from "../components/Loading";
 
-import { Text, View } from "../components/Themed";
+type Props = {
+  // navigation: RootTabScreenProps<"TabOne">;
+  navigation: StackNavigationProp<RootStackParamList, "NewPost">;
+  route: RouteProp<RootStackParamList, "NewPost">;
+};
 
-export default function NewPostScreen() {
-  const [memo, onChangeMemo] = React.useState("");
+export default function NewPostScreen(this: any, { navigation, route }: Props) {
+  const { user } = route.params;
+  const [text, setText] = useState<string>("");
+  const [score, setScore] = useState<number>(3);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Button
+          onPress={() => navigation.navigate("TabOne")}
+          title="CANCEL"
+          icon={{
+            name: "ban",
+            type: "font-awesome",
+            size: 15,
+            color: "white",
+          }}
+          titleStyle={{ fontWeight: "700" }}
+          buttonStyle={{
+            backgroundColor: "salmon",
+            borderColor: "transparent",
+            borderRadius: 10,
+            paddingLeft: 3,
+          }}
+          containerStyle={{
+            width: 100,
+          }}
+        />
+      ),
+      headerRight: () => (
+        <Button
+          onPress={onSubmit}
+          title="POST"
+          icon={{
+            name: "paper-plane",
+            type: "font-awesome",
+            size: 15,
+            color: "white",
+          }}
+          titleStyle={{ fontWeight: "700" }}
+          buttonStyle={{
+            backgroundColor: "rgba(90, 154, 230, 1)",
+            borderColor: "transparent",
+            borderRadius: 10,
+            paddingLeft: 3,
+          }}
+          containerStyle={{
+            width: 100,
+          }}
+        />
+      ),
+    });
+  }, [text]);
+
+  const onSubmit = async () => {
+    setLoading(true);
+    const diary = {
+      user: {
+        family: user.family,
+      },
+      title: "test title",
+      text: text,
+      score: score,
+      updatedAt: firebase.firestore.Timestamp.now(),
+      createdAt: firebase.firestore.Timestamp.now(),
+    } as Diary;
+    await addDiary(user.id, diary);
+    setLoading(false);
+    navigation.goBack();
+  };
 
   return (
-    <View>
-      <TextInput
-        multiline
-        style={styles.input}
-        onChangeText={onChangeMemo}
-        value={memo}
+    <View style={styles.container}>
+      <StarInput score={score} onChangeScore={(value) => setScore(value)} />
+      <TextArea
+        value={text}
+        onChangeText={(value) => {
+          setText(value);
+        }}
+        label="本文"
         placeholder="今日はどんなことがありましたか？"
-        keyboardType="default"
       />
-
+      <Loading visible={loading} />
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
@@ -25,11 +111,7 @@ export default function NewPostScreen() {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 150,
-    margin: 5,
-    borderWidth: 1,
-    padding: 4,
-    backgroundColor: "skyblue",
+  container: {
+    backgroundColor: "white",
   },
 });
