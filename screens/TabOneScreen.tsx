@@ -1,4 +1,6 @@
 import { FlatList, ShadowPropTypesIOS, StyleSheet } from "react-native";
+import { getDiarys } from "../lib/firebase";
+import { DiaryItem } from "../components/DiaryItem";
 import { FAB } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import EditScreenInfo from "../components/EditScreenInfo";
@@ -21,6 +23,11 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   const [diarys, setDiarys] = useState<Diary[]>([]);
   useEffect(() => {
     getFirebaseItems();
+    const fetchDiarys = async () => {
+      const diarys = await getDiarys(users[0].id);
+      setDiarys(diarys);
+    };
+    fetchDiarys();
   }, []);
 
   const getFirebaseItems = async () => {
@@ -46,6 +53,11 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         monthFormat={"yyyy年 M月"}
         onDayPress={this.onDayPress}
         markingType={"period"}
+      />
+      <FlatList
+        data={diarys}
+        renderItem={({ item }) => <DiaryItem diary={item} />}
+        keyExtractor={(item) => item.id}
       />
       {userItems}
       <FAB
