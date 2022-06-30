@@ -21,7 +21,7 @@ export const getUsers = async () => {
     const snapshot = await firebase.firestore().collection("user").get();
     const users = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User));
     return users;
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return [];
   }
@@ -30,3 +30,8 @@ export const getUsers = async () => {
 export const addDiary = async (userId: string, diary: Diary) => {
   await firebase.firestore().collection("user").doc(userId).collection("diarys").add(diary);
 };
+
+export const getDiarys = async (userId: string) => {
+  const diaryDocs = await firebase.firestore().collection("user").doc(userId).collection("diarys").orderBy("createdAt", "desc").get();
+  return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary))
+}
