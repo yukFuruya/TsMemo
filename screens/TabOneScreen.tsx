@@ -24,7 +24,7 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   useEffect(() => {
     getFirebaseItems();
     const fetchDiarys = async () => {
-      const diarys = await getDiarys(users[0].id);
+      const diarys = await getDiarys("R7dS60eyiSPFyrcbGLP8");
       setDiarys(diarys);
     };
     fetchDiarys();
@@ -42,19 +42,20 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
       <Text>{user.last}</Text>
     </View>
   ));
-
   const onPressAdd = (user: User) => {
     navigation.navigate("NewPost", { user }); // (3)
   };
 
   return (
     <View style={styles.container}>
-      <Calendar
-        monthFormat={"yyyy年 M月"}
-        onDayPress={this.onDayPress}
-        markingType={"period"}
-      />
       <FlatList
+        ListHeaderComponent={
+          <Calendar
+            monthFormat={"yyyy年 M月"}
+            onDayPress={this.onDayPress}
+            markingType={"period"}
+          />
+        }
         data={diarys}
         renderItem={({ item }) => <DiaryItem diary={item} />}
         keyExtractor={(item) => item.id}
