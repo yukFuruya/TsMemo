@@ -12,13 +12,14 @@ import { Diary } from "../types/diary";
 import { User } from "../types/user";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import firebase from "firebase";
 
 type Props = {
   // navigation: RootTabScreenProps<"TabOne">
   navigation: StackNavigationProp<RootStackParamList, "User">;
 };
 
-const INITIAL_DATE = '2022-07-06';
+const INITIAL_DATE = "2022-07-06";
 
 export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
@@ -27,11 +28,13 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   useEffect(() => {
     getFirebaseItems();
     const fetchDiarys = async () => {
-      const diarys = await getDiarys("R7dS60eyiSPFyrcbGLP8");
+      const diarys = await getDiarys(
+        firebase.firestore.Timestamp.fromDate(new Date(selected))
+      );
       setDiarys(diarys);
     };
     fetchDiarys();
-  }, []);
+  }, [selected]);
 
   const onDayPress = useCallback((day) => {
     setSelected(day.dateString);
@@ -42,13 +45,13 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
       [selected]: {
         selected: true,
         disableTouchEvent: false,
-        selectedColor: 'skyblue',
-        selectedTextColor: 'white'
+        selectedColor: "skyblue",
+        selectedTextColor: "white",
       },
-      ['2022-07-22']: {
-        dotColor: 'red',
-        marked: true
-      }
+      ["2022-07-22"]: {
+        dotColor: "red",
+        marked: true,
+      },
     };
   }, [selected]);
 
@@ -57,13 +60,6 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
     setUsers(users);
   };
 
-  const userItems = users.map((user, index) => (
-    <View style={{ margin: 10 }} key={index.toString()}>
-      <Text>{user.age}</Text>
-      <Text>{user.family}</Text>
-      <Text>{user.last}</Text>
-    </View>
-  ));
   const onPressAdd = (user: User) => {
     navigation.navigate("NewPost", { user }); // (3)
   };
@@ -82,7 +78,6 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         renderItem={({ item }) => <DiaryItem diary={item} />}
         keyExtractor={(item) => item.id}
       />
-      {userItems}
       <FAB
         style={{
           position: "absolute",

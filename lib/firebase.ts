@@ -19,7 +19,9 @@ if (!firebase.apps.length) {
 export const getUsers = async () => {
   try {
     const snapshot = await firebase.firestore().collection("user").get();
-    const users = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User));
+    const users = snapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id } as User)
+    );
     return users;
   } catch (err) {
     console.log(err);
@@ -28,10 +30,29 @@ export const getUsers = async () => {
 };
 
 export const addDiary = async (userId: string, diary: Diary) => {
-  await firebase.firestore().collection("user").doc(userId).collection("diarys").add(diary);
+  await firebase
+    .firestore()
+    .collection("user")
+    .doc(userId)
+    .collection("diarys")
+    .add(diary);
 };
 
-export const getDiarys = async (userId: string) => {
-  const diaryDocs = await firebase.firestore().collection("user").doc(userId).collection("diarys").orderBy("createdAt", "desc").get();
-  return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary))
-}
+export const getDiarys = async (targetDate: firebase.firestore.Timestamp) => {
+  const diaryDocs = await firebase
+    .firestore()
+    .collection("user")
+    .doc("R7dS60eyiSPFyrcbGLP8")
+    .collection("diarys")
+    .where("createdAt", ">=", targetDate)
+    .where(
+      "createdAt",
+      "<",
+      firebase.firestore.Timestamp.fromDate(
+        new Date(targetDate.toMillis() + 86400000)
+      )
+    )
+    .orderBy("createdAt", "desc")
+    .get();
+  return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary));
+};
