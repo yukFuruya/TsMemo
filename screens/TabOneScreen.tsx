@@ -8,6 +8,7 @@ import { Text, View } from "../components/Themed";
 import { RootStackParamList, RootTabScreenProps } from "../types";
 import { Calendar } from "react-native-calendars";
 import { getUsers } from "../lib/firebase";
+import { formatDate } from "../lib/diary";
 import { Diary } from "../types/diary";
 import { User } from "../types/user";
 import { RouteProp } from "@react-navigation/native";
@@ -25,6 +26,7 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   const [diarys, setDiarys] = useState<Diary[]>([]);
   const [selected, setSelected] = useState(INITIAL_DATE);
+  const [isDiaryExists, setIsDiaryExists] = useState<string>("");
   useEffect(() => {
     getFirebaseItems();
     const fetchDiarys = async () => {
@@ -32,6 +34,10 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         firebase.firestore.Timestamp.fromDate(new Date(selected))
       );
       setDiarys(diarys);
+      diarys.forEach((diary) =>
+        setIsDiaryExists(formatDate(diary.createdAt.toDate()))
+      );
+      console.log(isDiaryExists);
     };
     fetchDiarys();
   }, [selected]);
@@ -42,13 +48,16 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
 
   const marked = useMemo(() => {
     return {
+      // 選択した日付
       [selected]: {
         selected: true,
         disableTouchEvent: false,
         selectedColor: "skyblue",
         selectedTextColor: "white",
       },
-      ["2022-07-22"]: {
+
+      // ドットの日付
+      [isDiaryExists]: {
         dotColor: "red",
         marked: true,
       },
