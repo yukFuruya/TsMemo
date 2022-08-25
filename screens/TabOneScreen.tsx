@@ -1,17 +1,14 @@
-import { FlatList, ShadowPropTypesIOS, StyleSheet } from "react-native";
-import { getDiarys } from "../lib/firebase";
+import { FlatList, StyleSheet } from "react-native";
+import { getDiaryDocs, getDiarys } from "../lib/firebase";
 import { DiaryItem } from "../components/DiaryItem";
 import { FAB } from "react-native-paper";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import EditScreenInfo from "../components/EditScreenInfo";
-import { Text, View } from "../components/Themed";
-import { RootStackParamList, RootTabScreenProps } from "../types";
+import { View } from "../components/Themed";
+import { RootStackParamList } from "../types";
 import { Calendar } from "react-native-calendars";
 import { getUsers } from "../lib/firebase";
-import { formatDate } from "../lib/diary";
 import { Diary } from "../types/diary";
 import { User } from "../types/user";
-import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import firebase from "firebase";
 
@@ -20,13 +17,11 @@ type Props = {
   navigation: StackNavigationProp<RootStackParamList, "User">;
 };
 
-const INITIAL_DATE = "2022-07-06";
-
 export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   const [diarys, setDiarys] = useState<Diary[]>([]);
-  const [selected, setSelected] = useState(INITIAL_DATE);
-  const [isDiaryExists, setIsDiaryExists] = useState<string>("");
+  const [selected, setSelected] = useState("");
+  const [isDiaryExists, setIsDiaryExists] = useState<String[]>([]);
   useEffect(() => {
     getFirebaseItems();
     const fetchDiarys = async () => {
@@ -34,10 +29,13 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         firebase.firestore.Timestamp.fromDate(new Date(selected))
       );
       setDiarys(diarys);
-      diarys.forEach((diary) =>
-        setIsDiaryExists(formatDate(diary.createdAt.toDate()))
-      );
-      console.log(isDiaryExists);
+
+      const diaryDocs = await getDiaryDocs();
+      const createdAtStrings = diaryDocs.map((doc) => {
+        const milliSec = doc.createdAt.seconds * 1000;
+        const createdAtDate = new Date(milliSec);
+        return createdAtDate.toISOString().substring(0, 10);
+      });
     };
     fetchDiarys();
   }, [selected]);
@@ -47,7 +45,7 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   }, []);
 
   const marked = useMemo(() => {
-    return {
+    let selectInfo = {
       // 選択した日付
       [selected]: {
         selected: true,
@@ -55,13 +53,36 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         selectedColor: "skyblue",
         selectedTextColor: "white",
       },
-
-      // ドットの日付
-      [isDiaryExists]: {
-        dotColor: "red",
-        marked: true,
-      },
     };
+
+    let dotInfo = {};
+    let smallDotInfo = {};
+    for (let i = 0; i < isDiaryExists.length; i++) {
+      if (selected == String(isDiaryExists[i])) {
+        smallDotInfo = {
+          [String(isDiaryExists[i])]: {
+            dotColor: "red",
+            marked: true,
+            selected: true,
+            disableTouchEvent: false,
+            selectedColor: "skyblue",
+            selectedTextColor: "white",
+          },
+        };
+      } else {
+        smallDotInfo = {
+          [String(isDiaryExists[i])]: {
+            dotColor: "red",
+            marked: true,
+          },
+        };
+      }
+
+      dotInfo = Object.assign(dotInfo, smallDotInfo);
+    }
+
+    selectInfo = Object.assign(selectInfo, dotInfo);
+    return selectInfo;
   }, [selected]);
 
   const getFirebaseItems = async () => {

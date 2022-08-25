@@ -57,21 +57,12 @@ export const getDiarys = async (targetDate: firebase.firestore.Timestamp) => {
   return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary));
 };
 
-export const getDiaryDates = async () => {
+export const getDiaryDocs = async () => {
   const diaryDocs = await firebase
     .firestore()
     .collection("user")
     .doc("R7dS60eyiSPFyrcbGLP8")
     .collection("diarys")
-    .where("createdAt", ">=", targetDate)
-    .where(
-      "createdAt",
-      "<",
-      firebase.firestore.Timestamp.fromDate(
-        new Date(targetDate.toMillis() + 86400000)
-      )
-    )
-    .orderBy("createdAt", "desc")
     .get();
   return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary));
 };
