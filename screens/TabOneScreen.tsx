@@ -21,25 +21,27 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   const [diarys, setDiarys] = useState<Diary[]>([]);
   const [selected, setSelected] = useState("");
-  const [isDiaryExists, setIsDiaryExists] = useState<String[]>([]);
+  const [dates, setDates] = useState<String[]>([]);
+  
+  // 最初だけ
   useEffect(() => {
+    // usersを代入する
     getFirebaseItems();
-    const fetchDiarys = async () => {
-      const diarys = await getDiarys(
-        firebase.firestore.Timestamp.fromDate(new Date(selected))
-      );
-      setDiarys(diarys);
+  }, []);
 
-      const diaryDocs = await getDiaryDocs();
-      const createdAtStrings = diaryDocs.map((doc) => {
-        const milliSec = doc.createdAt.seconds * 1000;
-        const createdAtDate = new Date(milliSec);
-        return createdAtDate.toISOString().substring(0, 10);
-      });
-    };
+  // タップした時だけ走る処理
+  useEffect(() => {
+    // diarysを代入する
     fetchDiarys();
   }, [selected]);
 
+  // diarysが変化した時だけ走る処理
+  useEffect(() => {
+    // datesを代入する
+    fetchDates();
+  }, [diarys]);
+
+  // 選択してる日付を代入 
   const onDayPress = useCallback((day) => {
     setSelected(day.dateString);
   }, []);
@@ -57,10 +59,10 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
 
     let dotInfo = {};
     let smallDotInfo = {};
-    for (let i = 0; i < isDiaryExists.length; i++) {
-      if (selected == String(isDiaryExists[i])) {
+    for (let i = 0; i < dates.length; i++) {
+      if (selected == String(dates[i])) {
         smallDotInfo = {
-          [String(isDiaryExists[i])]: {
+          [String(dates[i])]: {
             dotColor: "red",
             marked: true,
             selected: true,
@@ -71,7 +73,7 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
         };
       } else {
         smallDotInfo = {
-          [String(isDiaryExists[i])]: {
+          [String(dates[i])]: {
             dotColor: "red",
             marked: true,
           },
@@ -83,11 +85,28 @@ export default function TabOneScreen(this: any, { navigation }: Props) {
 
     selectInfo = Object.assign(selectInfo, dotInfo);
     return selectInfo;
-  }, [selected]);
+  }, [selected, dates]);
 
   const getFirebaseItems = async () => {
     const users = await getUsers();
     setUsers(users);
+  };
+
+  const fetchDiarys = async () => {
+    const diarys = await getDiarys(
+      firebase.firestore.Timestamp.fromDate(new Date(selected))
+    );
+    setDiarys(diarys);
+  }
+
+  const fetchDates = async () => {
+    const diaryDocs = await getDiaryDocs();
+    const createdAtList = diaryDocs.map((doc) => {
+      const milliSec = doc.createdAt.seconds * 1000;
+      const createdAtDate = new Date(milliSec);
+      return createdAtDate.toISOString().substring(0, 10);
+    });
+    setDates(createdAtList);
   };
 
   const onPressAdd = (user: User) => {
