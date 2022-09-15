@@ -56,3 +56,13 @@ export const getDiarys = async (targetDate: firebase.firestore.Timestamp) => {
     .get();
   return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary));
 };
+
+export const getDiaryDocs = async () => {
+  const diaryDocs = await firebase
+    .firestore()
+    .collection("user")
+    .doc("R7dS60eyiSPFyrcbGLP8")
+    .collection("diarys")
+    .get();
+  return diaryDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Diary));
+};
